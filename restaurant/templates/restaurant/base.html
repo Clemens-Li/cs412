@@ -2,14 +2,15 @@
 {% load static %}
 <html>
     <head>
-        <title> Clemens Li's Ice Cream Shop </title>
+        <title>Clemens Li's Ice Cream Shop</title>
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
     </head>
     <body>
         <header>
-            Clemens Li's Ice Cream Shop
+            <h1>Clemens Li's Ice Cream Shop</h1>
             <nav>
-                <a href="{% url 'main'}">Main</a> | 
-                <a href="{% url 'order'}">Order</a>
+                <a href="{% url 'main' %}">Main</a> |
+                <a href="{% url 'order' %}">Order</a>
             </nav>
         </header>
         <main>
@@ -17,7 +18,7 @@
             {% endblock %}
         </main>
         <footer>
-            Clemens Li cl750@bu.edu
+            <p>Clemens Li cl750@bu.edu</p>
         </footer>
     </body>
 </html>

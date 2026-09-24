@@ -1,0 +1,28 @@
+<!--Confirmation page-->
+{% extends "restaurant/base.html" %}
+
+{% block content %}
+    <h2>Order Confirmation</h2>
+
+    <h3>Customer Information</h3>
+    <p>Name: {{ customer_name }}</p>
+    <p>Email: {{ customer_email }}</p>
+
+    <h3>Special Instructions</h3>
+    <p>{{ special_instructions|default:"No special instructions." }}</p>
+
+    <h3>Items Ordered</h3>
+    <ul>
+        {% for item in items %}
+            <li>{{ item }}</li>
+        {% empty %}
+            <li>No items selected</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Total</h3>
+    <p>${{ total }}</p>
+
+    <h3>Ready Time</h3>
+    <p>{{ readytime }}</p>
+{% endblock %}
