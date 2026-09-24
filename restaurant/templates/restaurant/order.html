@@ -7,7 +7,7 @@
     <form method="post" action="{% url 'confirmation' %}">
         {% csrf_token %}
 
-        <h4>Standard Menu</h4>
+        <h4>Standard Menu</h4> <!-- Always items on the menu-->
 
         <label>
             Vanilla Cone $4.00
@@ -29,11 +29,31 @@
             <input type="checkbox" name="milkshake" value="Milkshake">
         </label><br>
 
-        <h4>Daily Special $6.00</h4>
+        <h4>Daily Special $6.00</h4> <!-- context taken from views-->
         <label>
             {{ special }}
             <input type="checkbox" name="daily_special" value="{{ special }}" checked>
         </label><br>
+
+        <div class="toppings-box"> <!-- Toppings on the side-->
+            <h4>Extra Toppings on the Side</h4>
+            <label>
+                <input type="checkbox" name="chocolate_chips" value="Chocolate Chips">
+                Chocolate Chips (+$1.00)
+            </label>
+            <label>
+                <input type="checkbox" name="whipped_cream" value="Whipped Cream">
+                Whipped Cream (+$1.25)
+            </label>
+            <label>
+                <input type="checkbox" name="sprinkles" value="Sprinkles">
+                Sprinkles (+$0.75)
+            </label>
+            <label>
+                <input type="checkbox" name="caramel" value="Caramel Drizzle">
+                Caramel Drizzle (+$1.50)
+            </label>
+        </div><br>
 
         <h4>Special Instructions</h4>
         <textarea name="special_instructions" rows="4" cols="40"></textarea><br><br>

@@ -27,7 +27,7 @@ def confirmation_page(request):
         customer_email = request.POST.get("customer_email", "")
         special_instructions = request.POST.get("special_instructions", "")
 
-        # Prices for each key
+        # Main item prices
         prices = {
             "vanilla": 4.00,
             "chocolate": 4.50,
@@ -36,7 +36,6 @@ def confirmation_page(request):
             "daily_special": 6.00,
         }
 
-        # HTML label assignment
         labels = {
             "vanilla": "Vanilla Cone",
             "chocolate": "Chocolate Cone",
@@ -45,19 +44,31 @@ def confirmation_page(request):
             "daily_special": "Daily Special",
         }
 
+        toppings = { #extra toppings
+            "chocolate_chips": ("Chocolate Chips", 1.00),
+            "whipped_cream": ("Whipped Cream", 1.25),
+            "sprinkles": ("Sprinkles", 0.75),
+            "caramel": ("Caramel Drizzle", 1.50),
+        }
+
         # Calculate total price
         for key in prices:
             if request.POST.get(key):
                 items.append(labels[key])
                 total += prices[key]
 
-        ready_seconds = random.randint(30 * 60, 60 * 60)
+        for key, (label, price) in toppings.items():
+            if request.POST.get(key):
+                items.append(f"{label} (+${price:.2f})")
+                total += price
+
+        ready_seconds = random.randint(30 * 60, 60 * 60) # Ready time randomizer
         readytime = time.strftime(
             "%I:%M %p",
             time.localtime(time.time() + ready_seconds)
         )
 
-        context = {
+        context = { # context dictionary
             "items": items,
             "total": total,
             "readytime": readytime,
