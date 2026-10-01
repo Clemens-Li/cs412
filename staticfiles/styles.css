@@ -66,3 +66,32 @@ img {
     display: block;
     margin: 20px auto;
 }
+
+.profile-grid {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* grid columns */
+    gap: 1rem;
+}
+
+.profile img { /* to make every profile look uniform */
+    width: 100%;
+    aspect-ratio: 1; 
+    object-fit: cover;
+    margin: 0;
+}
+
+.detail_profile {
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
+    gap: 2rem;
+}
+
+.detail_image {
+    width: 60%;
+    height: 60%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    margin: 0;
+}
