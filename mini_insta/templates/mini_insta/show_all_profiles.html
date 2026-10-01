@@ -4,11 +4,16 @@
 {% block content %}
     <h1> Showing all profiles</h1>
     <!-- set of all {{ profiles }} -->
-    <div>
-        {% for profile in profiles %}
-            <img src="{{ profile.profile_image_url }}"
-            <h2>{{profile.display_name }}</h2>
-            <h3>@{{ profile.username }}</h3>
+    <div class="profile-grid"> <!-- so it can be styled -->
+        {% for profile in profiles %} <!-- For each profile, show the image, display name, and username-->
+            <article class="profile"> <!-- each tile in the grid -->
+                <a href="{% url 'show_profile' profile.pk %}"> <!-- So that the whole thing is a link-->
+                    <img src="{{ profile.profile_image_url }}">
+                </a>
+                <h2>{{ profile.display_name }}</h2>
+                <h3>@{{ profile.username }}</h3>
+            </article>
+            
         {% endfor %}
     </div>
 {% endblock %}

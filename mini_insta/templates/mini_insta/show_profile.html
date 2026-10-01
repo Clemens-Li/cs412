@@ -1,0 +1,17 @@
+<!-- Page with detailed info for a single profile -->
+{% extends "mini_insta/base.html" %}
+
+{% block content %}
+    <div class="detail_profile">
+        <img class="detail_image"src="{{ profile.profile_image_url }}">
+
+        <div class="detail_info">
+            <h2>{{ profile.display_name }}</h2>
+            <h3>@{{ profile.username }}</h3>
+            <p>Followers: 1000</p>
+            <p>Following: 1000</p>
+            <p>{{ profile.bio_text }}</p>
+            <p>User joined {{ profile.join_date }}</p>
+        </div>
+    </div>
+{% endblock %}

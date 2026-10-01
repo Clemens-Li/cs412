@@ -7,14 +7,14 @@
     </head>
     <body>
         <header>
-            <h1>Mini Instagram</h1>
+            <h1>Mini Instagram</h1> <!-- Header -->
         </header>
         <main>
-            {% block content %}
+            {% block content %} <!-- Actual content -->
             {% endblock %}
         </main>
         <footer>
-            <p>Clemens Li cl750@bu.edu</p>
+            <a href="{% url 'show_all_profiles' %}">See all profiles</a> <!-- Footer Link back to ProfileListView -->
         </footer>
     </body>
 </html>
