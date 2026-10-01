@@ -1,0 +1,20 @@
+<!--Base page (Header + Footer)-->
+{% load static %}
+<html>
+    <head>
+        <title>Mini Instagram</title>
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
+    </head>
+    <body>
+        <header>
+            <h1>Mini Instagram</h1>
+        </header>
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+        <footer>
+            <p>Clemens Li cl750@bu.edu</p>
+        </footer>
+    </body>
+</html>

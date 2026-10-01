@@ -1,0 +1,14 @@
+<!--All profiles Listed page-->
+{% extends "mini_insta/base.html" %}
+
+{% block content %}
+    <h1> Showing all profiles</h1>
+    <!-- set of all {{ profiles }} -->
+    <div>
+        {% for profile in profiles %}
+            <img src="{{ profile.profile_image_url }}"
+            <h2>{{profile.display_name }}</h2>
+            <h3>@{{ profile.username }}</h3>
+        {% endfor %}
+    </div>
+{% endblock %}

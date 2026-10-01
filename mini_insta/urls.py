@@ -1,8 +1,7 @@
 # URLs for Mini_Insta App
 from django.urls import path
 from django.conf import settings
-from . import views
-
+from .views import ProfileListView
 urlpatterns = [
-    path(r"", views.ProfileListView, name="show_all_profiles"), # empty path just leads to main
+    path(r"", ProfileListView.as_view(), name="show_all_profiles"), # empty path just leads to main
 ]
