@@ -1,0 +1,20 @@
+<!-- Page with detailed info for a single post -->
+{% extends "mini_insta/base.html" %}
+
+{% block content %}
+    <div class="post-photos">
+        <table class="post-photo-table">
+            <tbody>
+                <tr>
+                    {% for photo in post.get_all_photos %}
+                        <td><img class="post-photo" src="{{ photo.image_url }}" alt="Post photo"></td>
+                    {% empty %}
+                        <td>This post has no photos.</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <h2>{{ post.caption }}</h2> <!-- caption -->
+    <p>{{ post.timestamp }}</p> <!-- timestamp -->
+{% endblock %}

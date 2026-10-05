@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView
-from .models import Profile
+from .models import Profile, Post
 # Create your views here.
 
 class ProfileListView(ListView):
@@ -14,3 +14,9 @@ class ProfileDetailView(DetailView):
     model = Profile
     template_name = "mini_insta/show_profile.html" # HTML for a single profile page
     context_object_name = "profile" # singular profile
+
+class PostDetailView(DetailView):
+    ''' Obtains data for a single post, then directs to show_post.html'''
+    model = Post
+    template_name = "mini_insta/show_post.html" # HTML for a single post display
+    context_object_name = "post" # singular post

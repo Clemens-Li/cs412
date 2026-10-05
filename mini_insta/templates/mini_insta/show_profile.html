@@ -2,16 +2,35 @@
 {% extends "mini_insta/base.html" %}
 
 {% block content %}
-    <div class="detail_profile">
-        <img class="detail_image"src="{{ profile.profile_image_url }}">
+    <div class="profile-page">
+        <div class="detail_profile">
+            <img class="detail_image" src="{{ profile.profile_image_url }}">
 
-        <div class="detail_info">
-            <h2>{{ profile.display_name }}</h2>
-            <h3>@{{ profile.username }}</h3>
-            <p>Followers: 1000</p>
-            <p>Following: 1000</p>
-            <p>{{ profile.bio_text }}</p>
-            <p>User joined {{ profile.join_date }}</p>
+            <div class="detail_info"> <!-- Profile info -->
+                <h2>{{ profile.display_name }}</h2>
+                <h3>@{{ profile.username }}</h3>
+                <p>Followers: 1000</p>
+                <p>Following: 1000</p>
+                <p>{{ profile.bio_text }}</p>
+                <p>User joined {{ profile.join_date }}</p>
+            </div>
+        </div>
+
+        <div class="detail_posts">
+            <h2> Posts </h2>
+            {% for post in profile.get_all_posts %} <!-- For each post in the profile, do the following-->
+                {% for photo in post.get_all_photos %} <!-- access each post's photos -->
+                    {% if forloop.first %} <!-- If image(s) exists, show the first one -->
+                        <a href="{% url 'show_post' post.pk %}">
+                            <img src="{{ photo.image_url }}" alt="Post photo">
+                        </a>
+                    {% endif %}
+                {% empty %} <!-- If no images, show no image -->
+                    <a href="{% url 'show_post' post.pk %}">
+                            <img src="..." alt="No image">
+                        </a>
+                {% endfor %}
+            {% endfor %}
         </div>
     </div>
 {% endblock %}
