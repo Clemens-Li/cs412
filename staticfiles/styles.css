@@ -79,19 +79,46 @@ img {
     aspect-ratio: 1; 
     object-fit: cover;
     margin: 0;
+    border-radius: 50%;
 }
 
-.detail_profile {
-    display: flex;
+.profile-page {
     width: 100%;
-    align-items: flex-start;
+}
+
+.detail_profile { /*for each profile */
+    display: flex;
+    width: min(100%, 720px);
+    align-items: center;
     gap: 2rem;
+    margin: 0 auto 2rem;
 }
 
 .detail_image {
-    width: 60%;
-    height: 60%;
+    flex: 0 0 28%;
+    width: 28%;
     aspect-ratio: 1;
     object-fit: cover;
     margin: 0;
+    border-radius: 50%;
+}
+
+.detail_posts {
+    width: min(100%, 720px);
+    margin: 0 auto;
+}
+
+.detail_info {
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+}
+
+.detail_info h2,
+.detail_info h3 {
+    margin: 0 0 0.75rem;
+}
+
+.detail_info p {
+    margin: 0.5rem 0;
 }
