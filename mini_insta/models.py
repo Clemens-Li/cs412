@@ -36,9 +36,17 @@ class Post(models.Model):
 class Photo(models.Model):
     ''' The metadata of a single photo used in a Post object'''
     post = models.ForeignKey(Post, on_delete=models.CASCADE) # Foreign key post, if a post is deleted all of the photos in that post are also deleted
-    image_url = models.TextField(blank=True) # for the actual photo
+    image_url = models.TextField(blank=True) # for the photo URL
     timestamp = models.DateTimeField(auto_now=True) # Time Photo was created/saved
+    image_file = models.ImageField(blank=True) # for photo file
 
     def __str__(self):
         ''' Return a string representation of this Photo object '''
-        return f'Photo posted by {self.post.profile.username}, saved at {self.timestamp}' # Username and time saved
+        return f'Photo posted by {self.post.profile.username}, saved at {self.timestamp}; URL: {self.get_image_url}' # Username and time saved
+
+    def get_image_url(self):
+        ''' Either return image_url attribute, else the url of the image_file attribute'''
+        if (self.image_url):
+            return self.image_url
+        else:
+            return self.image_file.url

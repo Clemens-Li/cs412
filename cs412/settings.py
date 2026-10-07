@@ -135,8 +135,9 @@ MAILERS = {
     },
 }
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-MEDIA_URL= "media/"
+# declarations to reference media files
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+MEDIA_URL= "/media/"
 
 import socket
 CS_DEPLOYMENT_HOSTNAME = 'cs-webapps.bu.edu'
