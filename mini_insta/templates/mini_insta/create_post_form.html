@@ -1,0 +1,18 @@
+<!-- Page form for creating a post -->
+{% extends "mini_insta/base.html" %}
+
+{% block content %}
+
+<h2>Create a new post</h2>
+
+<!-- Form to submit the creation of a new Post -->
+ <form action="{% url 'create_post'}" method="POST"> <!-- Will direct to the create_post URL and POST after submission -->
+    {% csrf_token %} <!-- for verification -->
+    <table>
+        {{form.as_table}} <!-- The actual form-->
+    </table>
+
+    <input type="submit" name="submit" value="submit">
+ </form>
+
+{% endblock %}

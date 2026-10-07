@@ -1,3 +1,4 @@
+# cs412/urls.py
 """
 URL configuration for cs412 project.
 

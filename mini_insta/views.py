@@ -1,6 +1,8 @@
 from django.shortcuts import render
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, CreateView
 from .models import Profile, Post
+from .forms import CreatePostForm
+
 # Create your views here.
 
 class ProfileListView(ListView):
@@ -20,3 +22,8 @@ class PostDetailView(DetailView):
     model = Post
     template_name = "mini_insta/show_post.html" # HTML for a single post display
     context_object_name = "post" # singular post
+
+class CreatePostView(CreateView):
+    ''' A view to handle the creation of a Post (display HTML to user GET, process form submission and store new Post object POST)'''
+    form_class = CreatePostForm
+    template_name = "mini_insta/create_post_form.html" # HTML for the form to create a Post

@@ -30,8 +30,8 @@ class Post(models.Model):
         return f'Posted by {self.profile.username} at {self.timestamp}' # username and post time
 
     def get_all_photos(self):
-            ''' Returns all Photo objects with the caller Post object as the foreign key '''
-            return Photo.objects.filter(post=self).order_by("timestamp") # Filters all Photo-class object with itself as the foreign key and orders by oldest first
+        ''' Returns all Photo objects with the caller Post object as the foreign key '''
+        return Photo.objects.filter(post=self).order_by("timestamp") # Filters all Photo-class object with itself as the foreign key and orders by oldest first
 
 class Photo(models.Model):
     ''' The metadata of a single photo used in a Post object'''
