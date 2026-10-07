@@ -22,7 +22,7 @@
                 {% for photo in post.get_all_photos %} <!-- access each post's photos -->
                     {% if forloop.first %} <!-- If image(s) exists, show the first one -->
                         <a href="{% url 'show_post' post.pk %}">
-                            <img src="{{ photo.image_url }}" alt="Post photo">
+                            <img src="{{ photo.get_image_url }}" alt="Post photo">
                         </a>
                     {% endif %}
                 {% empty %} <!-- If no images, show no image -->

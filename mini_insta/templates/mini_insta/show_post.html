@@ -7,7 +7,7 @@
             <tbody>
                 <tr>
                     {% for photo in post.get_all_photos %}
-                        <td><img class="post-photo" src="{{ photo.image_url }}" alt="Post photo"></td>
+                        <td><img class="post-photo" src="{{ photo.get_image_url }}" alt="Post photo"></td>
                     {% empty %}
                         <td>This post has no photos.</td>
                     {% endfor %}

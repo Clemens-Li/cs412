@@ -42,7 +42,7 @@ class Photo(models.Model):
 
     def __str__(self):
         ''' Return a string representation of this Photo object '''
-        return f'Photo posted by {self.post.profile.username}, saved at {self.timestamp}; URL: {self.get_image_url}' # Username and time saved
+        return f'Photo posted by {self.post.profile.username}, saved at {self.timestamp}; URL: {self.get_image_url()}' # Username and time saved
 
     def get_image_url(self):
         ''' Either return image_url attribute, else the url of the image_file attribute'''

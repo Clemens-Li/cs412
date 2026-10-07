@@ -43,10 +43,13 @@ class CreatePostView(CreateView):
         profile = Profile.objects.get(pk=pk) # Locate correct Profile
         form.instance.profile = profile # attach Profile to Post
         response = super().form_valid(form) # have to do this first so I can create my Photo
-        Photo.objects.create( # Create a Photo after saving Post
-            post=self.object,
-            image_url=self.request.POST['image_url']
-        )
+        files = self.request.FILES.getlist("image_file")
+        for file in files: # for each file in the submission list
+            Photo.objects.create( # Create a Photo after saving Post
+                post=self.object,
+                image_file = file
+                # image_url=self.request.POST['image_url'] not needed anymore
+            )
         return response
 
     def get_success_url(self):
