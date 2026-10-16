@@ -1,3 +1,4 @@
+''' Clemens Li cl750@bu.edu | Model designs (Photo, Post, Profile)'''
 from django.db import models
 
 # Create your models here.

@@ -1,0 +1,19 @@
+<!-- Clemens Li cl750@bu.edu | Page form for updating a Profile -->
+ {% extends "mini_insta/base.html" %}
+
+ {% block content %}
+
+ <h2>Update Your Profile</h2>
+
+<!-- -->
+<form action="{% url 'update_profile' profile.pk %}" method="POST" enctype="multipart/form-data"> <!-- Will direct to the create_post URL and POST after submission -->
+    {% csrf_token %} <!-- for verification -->
+    <table>
+        {{form.as_table}} <!-- The actual form-->
+    </table>
+    <input type="file" id="image_file" name="image_file" multiple> <!-- switched to image file submission -->
+    <input type="submit" name="submit" value="Submit">
+    <a href="{% url 'show_profile' profile.pk %}">Cancel</a>
+</form>
+
+{% endblock %}

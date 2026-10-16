@@ -1,3 +1,4 @@
+''' Clemens Li cl750@bu.edu | Registration of created models '''
 from django.contrib import admin
 
 # Register your models here.

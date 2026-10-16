@@ -1,8 +1,9 @@
+''' Clemens Li cl750@bu.edu | Views for intermediate processes '''
 from django.shortcuts import render
-from django.views.generic import DetailView, ListView, CreateView
+from django.views.generic import DetailView, ListView, CreateView, UpdateView
 from django.urls import reverse
 from .models import Profile, Post, Photo
-from .forms import CreatePostForm
+from .forms import CreatePostForm, UpdateProfileForm
 
 # Create your views here.
 
@@ -19,7 +20,7 @@ class ProfileDetailView(DetailView):
     context_object_name = "profile" # singular profile
 
 class PostDetailView(DetailView):
-    ''' Obtains data for a single post, then directs to show_post.html'''
+    ''' Obtains data for a single post, then directs to show_post.html '''
     model = Post
     template_name = "mini_insta/show_post.html" # HTML for a single post display
     context_object_name = "post" # singular post
@@ -56,5 +57,15 @@ class CreatePostView(CreateView):
         ''' Provide a URL to redirect after creating a new Post '''
         pk = self.kwargs["pk"] # retrieve pk from URL pattern
         return reverse("show_post", kwargs={"pk": self.object.pk}) # call reverse to generate URL for newly created post
+
+class UpdateProfileView(UpdateView):
+    ''' A view to handle the updating of a Profile (displays UpdateProfileForm then handles the submission)'''
+    form_class = UpdateProfileForm
+    template_name = "blog/update_profile_form.html" # HTML for the form to update a Profile
+
+    def form_valid(self, form):
+        ''' Handles form submission for to update a Profile object '''
+        print(f"UpdateProfileView: form.cleaned_data{form.cleaned_data}") # Print formatted data in terminal for visual check
+        return super().form_valid(form)
 
     
