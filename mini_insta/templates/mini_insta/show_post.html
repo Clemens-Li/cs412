@@ -15,8 +15,19 @@
             </tbody>
         </table>
     </div>
-    <h2>{{ post.caption }}</h2> <!-- caption -->
-    <p>{{ post.timestamp }}</p> <!-- timestamp -->
+    <h4>Likes: {{ post.get_likes.count }}</h4>
+    <h4>{{ post.caption }} Posted at {{ post.timestamp }}</h4> <!-- caption --> 
+
+    <h3>Comments</h3>
+    {% for comment in post.get_all_comments %} <!-- Show all comments -->
+        <p>
+            <strong>{{ comment.profile.display_name }}</strong>:
+            {{ comment.text }}
+        </p>
+        <small>{{ comment.timestamp }}</small>
+    {% empty %}
+        <p>No comments yet.</p>
+    {% endfor %}
 
     <nav>
         <a href="{% url 'update_post' post.pk %}" class="button">Update Post</a> |

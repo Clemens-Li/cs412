@@ -55,8 +55,16 @@ class Post(models.Model):
 
     def get_all_photos(self):
         ''' Returns all Photo objects with the caller Post object as the foreign key '''
-        return Photo.objects.filter(post=self).order_by("timestamp") # Filters all Photo-class object with itself as the foreign key and orders by oldest first
+        return Photo.objects.filter(post=self).order_by("timestamp") # Filters all Photo objects with itself as the foreign key and orders by oldest first
 
+    def get_all_comments(self):
+        ''' Returns all Comment objects with the caller Post object as the foreign key '''
+        return Comment.objects.filter(post=self) # Filters all Comment objects with itself as the foreign key
+
+    def get_likes(self):
+        ''' Returns all Like objects with the caller Post object as the foreign key '''
+        return Like.objects.filter(post=self) # Filters all Like objects with itself as the foreign key
+    
 class Photo(models.Model):
     ''' The metadata of a single photo used in a Post object'''
     post = models.ForeignKey(Post, on_delete=models.CASCADE) # Foreign key post, if a post is deleted all of the photos in that post are also deleted
@@ -85,4 +93,22 @@ class Follow(models.Model):
         followed = self.profile.display_name or self.profile.username # if display_name doesn't exist, show username
         follower = self.follower_profile.display_name or self.follower_profile.username # if display_name doesn't exist, show username
         return f"{follower} follows {followed}"
-        
+
+class Comment(models.Model):
+    ''' The metadata of a Comment relation associating a Profile and a Post with each other '''
+    post = models.ForeignKey(Post, on_delete=models.CASCADE) # Associated Post FK
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE) # Associated Profile FK
+    timestamp = models.DateTimeField(auto_now=True) # time commented
+    text = models.TextField(blank=True) # comment text
+
+    def __str__(self):
+        return f"{self.profile.username} commented on Post #{self.post_id} at {self.timestamp}"
+    
+class Like(models.Model):
+    ''' The metadata of a Like relation associating a Profile and a Post with each other '''
+    post = models.ForeignKey(Post, on_delete=models.CASCADE) # Associated Post FK
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE) # Associated Profile FK
+    timestamp = models.DateTimeField(auto_now=True) # time commented
+
+    def __str__(self):
+        return f"{self.profile.username} liked Post #{self.post_id} at {self.timestamp}"
