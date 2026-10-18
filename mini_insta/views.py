@@ -70,7 +70,7 @@ class UpdateProfileView(UpdateView):
         return super().form_valid(form)
 
 class DeletePostView(DeleteView):
-    ''' A view to handle the deletion of a Profile'''
+    ''' A view to handle the deletion of a Profile '''
     model = Post
     template_name = "mini_insta/delete_post_form.html"
     context_object_name = "post"
@@ -87,6 +87,7 @@ class DeletePostView(DeleteView):
         return reverse("show_profile", kwargs={"pk": self.object.profile_id}) # reverse for dynamic URL generation
 
 class UpdatePostView(UpdateView): # Same as DeletePostView
+    ''' A view to handle the updating of a Profile '''
     model = Post
     form_class = UpdatePostForm
     template_name = "mini_insta/update_post_form.html"
@@ -101,5 +102,17 @@ class UpdatePostView(UpdateView): # Same as DeletePostView
     def get_success_url(self):
         ''' Provide a URL to redirect to after deleting a Post '''
         return reverse("show_profile", kwargs={"pk": self.object.profile_id}) # reverse for dynamic URL generation
+
+class ShowFollowersDetailView(DetailView):
+    ''' A view to display the Followers for a single Profile object '''
+    model = Profile
+    template_name = "mini_insta/show_followers.html"
+    context_object_name = "profile"
+
+class ShowFollowingDetailView(DetailView):
+    ''' A view to display the Following for a single Profile object '''
+    model = Profile
+    template_name = "mini_insta/show_following.html"
+    context_object_name = "profile"
 
 

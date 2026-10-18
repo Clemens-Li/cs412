@@ -9,8 +9,19 @@
             <div class="detail_info"> <!-- Profile info -->
                 <h2>{{ profile.display_name }}</h2>
                 <h3>@{{ profile.username }}</h3>
-                <p>Followers: 1000</p>
-                <p>Following: 1000</p>
+                <!-- Just learned span, hope it's good and kind of works -->
+                <div class="stats">
+                    <!-- Count links to show_followers.html -->
+                    <a class="stat" href="{% url 'show_followers' profile.pk %}">
+                        <span class="count">{{ profile.get_num_followers }}</span>
+                        <span>Followers</span>
+                    </a>
+                    <!-- Count links to show_following.html -->
+                    <a class="stat" href="{% url 'show_following' profile.pk %}">
+                        <span class="count">{{ profile.get_num_following }}</span>
+                        <span>Following</span>
+                    </a>
+                </div>
                 <p>{{ profile.bio_text }}</p>
                 <p>User joined {{ profile.join_date }}</p>
                 <a href="{% url 'update_profile' profile.pk %}">Update Profile</a> <!-- Link to update the current Profile -->

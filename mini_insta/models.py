@@ -24,6 +24,24 @@ class Profile(models.Model):
         ''' Returns the absolute URL of the profile for reference using reverse'''
         return reverse("show_profile", kwargs={"pk": self.pk})
 
+    def get_followers(self):
+        ''' Returns a list of all Profiles following this Profile object'''
+        followers = Follow.objects.filter(profile=self) # finds all Follow relations containing itself as the followed Profile FK
+        return [follow.follower_profile for follow in followers] # makes a list containing a Profile for each relation
+
+    def get_num_followers(self):
+        ''' Returns the number of Profiles following this Profile object '''
+        return Follow.objects.filter(profile=self).count() # counts the Follow relations containing itself as the followed Profile FK
+
+    def get_following(self):
+        ''' Returns a list of all Profiles followed by this Profile object '''
+        following = Follow.objects.filter(follower_profile = self) # finds all Follow relations containing itself as the following Profile FK
+        return [follow.profile for follow in following] # makes a list containing a Profile for each relation
+
+    def get_num_following(self):
+        ''' Returns the number of Profiles followed by this Profile object '''
+        return Follow.objects.filter(follower_profile=self).count()
+    
 # Secondary Model for posts in each profile
 class Post(models.Model):
     ''' The metadata of an Instagram post found in a profile '''
@@ -56,3 +74,15 @@ class Photo(models.Model):
             return self.image_url
         else:
             return self.image_file.url
+
+class Follow(models.Model):
+    ''' The metadata of a relation associating 2 Profiles with each other '''
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="profile") # the profile being followed
+    follower_profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="follower_profile") # the profile doing the following
+    timestamp = models.DateTimeField(auto_now=True) # Timestamp for when follower_profile followed profile
+
+    def __str__(self):
+        followed = self.profile.display_name or self.profile.username # if display_name doesn't exist, show username
+        follower = self.follower_profile.display_name or self.follower_profile.username # if display_name doesn't exist, show username
+        return f"{follower} follows {followed}"
+        

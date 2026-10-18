@@ -1,0 +1,18 @@
+<!-- Clemens Li cl750@bu.edu | Page to display a Profile's following -->
+{% extends "mini_insta/base.html" %}
+
+{% block content %}
+    <h2>Who {{ profile.display_name }}'s' following</h2>
+
+    <!-- Show each Profile's profile image and display name as a link -->
+    {% for following in profile.get_following %}
+        <p>
+            <a href="{% url 'show_profile' following.pk %}">
+                <img src="{{ following.profile_image_url }}">
+                {{ following.display_name }}
+            </a>
+        </p>
+    {% empty %}
+        <p>This profile is not following anyone yet.</p>
+    {% endfor %}
+{% endblock %}

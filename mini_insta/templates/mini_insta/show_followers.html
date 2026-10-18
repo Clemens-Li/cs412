@@ -1,0 +1,18 @@
+<!-- Clemens Li cl750@bu.edu | Page to display a Profile's followers -->
+{% extends "mini_insta/base.html" %}
+
+{% block content %}
+    <h2>Who follows {{ profile.display_name }}</h2>
+
+    <!-- Show each Profile's profile image and display name as a link -->
+    {% for follower in profile.get_followers %}
+        <p>
+            <a href="{% url 'show_profile' follower.pk %}">
+                <img src="{{ follower.profile_image_url }}">
+                {{ follower.display_name }}
+            </a>
+        </p>
+    {% empty %}
+        <p>This profile has no followers yet.</p>
+    {% endfor %}
+{% endblock %}
