@@ -54,14 +54,15 @@ class CreatePostView(CreateView):
         return response
 
     def get_success_url(self):
-        ''' Provide a URL to redirect after creating a new Post '''
+        ''' Provide a URL to redirect to after creating a new Post '''
         pk = self.kwargs["pk"] # retrieve pk from URL pattern
         return reverse("show_post", kwargs={"pk": self.object.pk}) # call reverse to generate URL for newly created post
 
 class UpdateProfileView(UpdateView):
     ''' A view to handle the updating of a Profile (displays UpdateProfileForm then handles the submission)'''
+    model = Profile
     form_class = UpdateProfileForm
-    template_name = "blog/update_profile_form.html" # HTML for the form to update a Profile
+    template_name = "mini_insta/update_profile_form.html" # HTML for the form to update a Profile
 
     def form_valid(self, form):
         ''' Handles form submission for to update a Profile object '''

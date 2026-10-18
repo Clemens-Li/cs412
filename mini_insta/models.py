@@ -1,5 +1,6 @@
 ''' Clemens Li cl750@bu.edu | Model designs (Photo, Post, Profile)'''
 from django.db import models
+from django.urls import reverse
 
 # Create your models here.
 class Profile(models.Model):
@@ -18,6 +19,10 @@ class Profile(models.Model):
     def get_all_posts(self):
         ''' Returns all Post objects with the caller Profile object as the foreign key '''
         return Post.objects.filter(profile=self).order_by("timestamp") # Filters all Post-class object with itself as the foreign key and orders by oldest first
+
+    def get_absolute_url(self):
+        ''' Returns the absolute URL of the profile for reference using reverse'''
+        return reverse("show_profile", kwargs={"pk": self.pk})
 
 # Secondary Model for posts in each profile
 class Post(models.Model):
