@@ -122,3 +122,24 @@ img {
 .detail_info p {
     margin: 0.5rem 0;
 }
+
+/* sick of how the nav links just look like links lol */
+nav a.button {
+    display: inline-block;
+    padding: 10px 16px;
+    border: 1px solid #555;
+    border-radius: 6px;
+    background-color: #f2f2f2;
+    color: #000;
+    text-decoration: none;
+    margin: 0 6px;
+}
+
+nav a.button:hover {
+    background-color: #ddd;
+}
+
+nav a.button:focus-visible {
+    outline: 2px solid #005fcc;
+    outline-offset: 2px;
+}

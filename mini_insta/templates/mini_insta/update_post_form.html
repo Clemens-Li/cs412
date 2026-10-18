@@ -1,0 +1,31 @@
+<!-- Clemens Li cl750@bu.edu | Page for deleting a Post -->
+{% extends "mini_insta/base.html" %}
+
+<!-- Looks exactly like show_post.html but with delete buttons -->
+{% block content %}
+    <div class="post-photos">
+        <table class="post-photo-table">
+            <tbody>
+                <tr>
+                    {% for photo in post.get_all_photos %}
+                        <td><img class="post-photo" src="{{ photo.get_image_url }}" alt="Post photo"></td>
+                    {% empty %}
+                        <td>This post has no photos.</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <h3>{{ post.caption }}</h3> <!-- caption -->
+    <p>Posted at {{ post.timestamp }}</p> <!-- timestamp -->
+
+    <form action="{% url 'update_post' post.pk %}" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Confirm Update</button>
+    </form>
+
+    <form action="{% url 'show_profile' profile.pk %}" method="GET">
+        <button type="submit">Cancel</button>
+    </form>
+{% endblock %}

@@ -17,4 +17,9 @@
     </div>
     <h2>{{ post.caption }}</h2> <!-- caption -->
     <p>{{ post.timestamp }}</p> <!-- timestamp -->
+
+    <nav>
+        <a href="{% url 'update_post' post.pk %}" class="button">Update Post</a> |
+        <a href="{% url 'delete_post' post.pk %}" class="button">Delete Post</a>
+    </nav>
 {% endblock %}

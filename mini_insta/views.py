@@ -1,9 +1,9 @@
 ''' Clemens Li cl750@bu.edu | Views for intermediate processes '''
 from django.shortcuts import render
-from django.views.generic import DetailView, ListView, CreateView, UpdateView
+from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse
 from .models import Profile, Post, Photo
-from .forms import CreatePostForm, UpdateProfileForm
+from .forms import CreatePostForm, UpdateProfileForm, UpdatePostForm
 
 # Create your views here.
 
@@ -69,4 +69,37 @@ class UpdateProfileView(UpdateView):
         print(f"UpdateProfileView: form.cleaned_data{form.cleaned_data}") # Print formatted data in terminal for visual check
         return super().form_valid(form)
 
-    
+class DeletePostView(DeleteView):
+    ''' A view to handle the deletion of a Profile'''
+    model = Post
+    template_name = "mini_insta/delete_post_form.html"
+    context_object_name = "post"
+
+    def get_context_data(self, **kwargs):
+        ''' Return dictionary of context variables for use in the template '''
+        context = super().get_context_data() # superclass method
+        context["post"] = self.object # Post to be deleted is the context object
+        context["profile"] = self.object.profile # already a Post attribute
+        return context
+
+    def get_success_url(self):
+        ''' Provide a URL to redirect to after deleting a Post '''
+        return reverse("show_profile", kwargs={"pk": self.object.profile_id}) # reverse for dynamic URL generation
+
+class UpdatePostView(UpdateView): # Same as DeletePostView
+    model = Post
+    form_class = UpdatePostForm
+    template_name = "mini_insta/update_post_form.html"
+
+    def get_context_data(self, **kwargs):
+        ''' Return dictionary of context variables for use in the template '''
+        context = super().get_context_data() # superclass method
+        context["post"] = self.object # Post to be deleted is the context object
+        context["profile"] = self.object.profile # already a Post attribute
+        return context
+
+    def get_success_url(self):
+        ''' Provide a URL to redirect to after deleting a Post '''
+        return reverse("show_profile", kwargs={"pk": self.object.profile_id}) # reverse for dynamic URL generation
+
+
