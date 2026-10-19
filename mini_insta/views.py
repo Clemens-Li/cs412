@@ -121,5 +121,39 @@ class ShowFeedView(DetailView):
     template_name = "mini_insta/show_feed.html"
     context_object_name = "profile"
 
+class SearchView(ListView):
+    ''' A view to display searches called by a single Profile object '''
+    template_name = "mini_insta/search_results.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        ''' Handles requests or redirects to search.html for request submission '''
+        if "query" not in self.request.GET:
+            profile = Profile.objects.get(pk=self.kwargs["pk"])
+            return render(request, "mini_insta/search.html", {"profile": profile})
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        ''' Replaces model attribute in the ListView, filters Post objects containing query '''
+        query = self.request.GET.get("query", "").strip() # retrieves the query from GET request
+        return Post.objects.filter(caption__icontains=query)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        query = self.request.GET.get("query", "").strip()
+        context["profile"] = Profile.objects.get(pk=self.kwargs["pk"])
+        context["query"] = query
+        context["posts"] = context["object_list"]
+
+        if query:
+            username_match = Profile.objects.filter(username__icontains=query) # Profiles by username
+            display_name_match = Profile.objects.filter(display_name__icontains=query) # Profiles by display name
+            bio_text_match = Profile.objects.filter(bio_text__icontains=query) # Profiles by bios
+            context["profiles"] = (username_match | display_name_match | bio_text_match) # if a Profile's username, display name, or bio matches the query, add to context
+        else:
+            context["profiles"] = Profile.objects.none()
+
+        return context
+
+
 
 

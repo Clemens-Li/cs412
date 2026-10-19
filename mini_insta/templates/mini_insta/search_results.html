@@ -1,0 +1,25 @@
+<!-- Clemens Li cl750@bu.edu | Page with search results called by a Profile -->
+ {% extends "mini_insta/base.html" %}
+
+ {% block content %}
+    <h2>Search results for "{{ query }}"</h2>
+    <h3>Profiles</h3>
+    {% for profile in profiles %} <!-- for each result, show the Profile details -->
+        <p>
+            <a href="{% url 'show_profile' profile.pk %}">
+                {{ profile.display_name }} (@{{ profile.username }})
+            </a>
+        </p>
+    {% empty %}
+        <p>No matching profiles.</p>
+    {% endfor %}
+
+    <h3>Posts</h3>
+    {% for post in posts %}
+        <p>
+            <a href="{% url 'show_post' post.pk %}">{{ post.caption }}</a>
+        </p>
+    {% empty %}
+        <p>No matching posts.</p>
+    {% endfor %}
+{% endblock %}
