@@ -1,0 +1,51 @@
+<!-- Clemens Li cl750@bu.edu | Page for displaying the feed for a Profile -->
+{% extends "mini_insta/base.html" %}
+
+{% block content %}
+    <h2>{{ profile.display_name }}'s Feed</h2>
+    <p><a href="{% url 'show_profile' profile.pk %}">Back to profile</a></p>
+
+    {% for post in profile.get_post_feed %} <!-- For each post in the feed, show profile and its image -->
+        <article class="feed-post">
+            <header>
+                <a href="{% url 'show_profile' post.profile.pk %}">
+                    <img
+                        src="{{ post.profile.profile_image_url }}"
+                        alt="{{ post.profile.display_name }}'s profile image"
+                        width="50"
+                    >
+                    {{ post.profile.display_name }}
+                </a>
+            </header>
+
+            <!-- Same format as posts -->
+            {% for photo in post.get_all_photos %}
+                {% if forloop.first %}
+                    <a href="{% url 'show_post' post.pk %}">
+                        <img src="{{ photo.get_image_url }}" alt="Post photo">
+                    </a>
+                {% endif %}
+            {% empty %}
+                <p>This post has no photos.</p>
+            {% endfor %}
+
+            <p>{{ post.caption }}</p>
+            <p>Likes: {{ post.get_likes.count }}</p>
+
+            <h3>Comments</h3>
+            {% for comment in post.get_all_comments %}
+                <p>
+                    <strong>{{ comment.profile.display_name }}</strong>:
+                    {{ comment.text }}
+                </p>
+            {% empty %}
+                <p>No comments yet.</p>
+            {% endfor %}
+        </article>
+        {% if not forloop.last %}
+            <hr class="post-divider">
+        {% endif %}
+    {% empty %}
+        <p>No posts to show in this feed yet.</p>
+    {% endfor %}
+{% endblock %}

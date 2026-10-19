@@ -41,6 +41,11 @@ class Profile(models.Model):
     def get_num_following(self):
         ''' Returns the number of Profiles followed by this Profile object '''
         return Follow.objects.filter(follower_profile=self).count()
+
+    def get_post_feed(self):
+        ''' Returns a QuerySet of Posts from Profiles this Profile object follows'''
+        followed_profile_ids = Follow.objects.filter(follower_profile=self).values_list("profile_id", flat=True)
+        return Post.objects.filter(profile_id__in = followed_profile_ids).order_by("-timestamp") # Returns a Query Set
     
 # Secondary Model for posts in each profile
 class Post(models.Model):
