@@ -6,7 +6,7 @@
  <h2>Update Your Profile</h2>
 
 <!-- -->
-<form action="{% url 'update_profile' profile.pk %}" method="POST" enctype="multipart/form-data"> <!-- Will direct to the create_post URL and POST after submission -->
+<form action="{% url 'update_profile' %}" method="POST" enctype="multipart/form-data"> <!-- Will direct to the create_post URL and POST after submission -->
     {% csrf_token %} <!-- for verification -->
     <table>
         {{form.as_table}} <!-- The actual form-->

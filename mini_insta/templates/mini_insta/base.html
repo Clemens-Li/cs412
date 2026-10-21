@@ -4,6 +4,12 @@
     <head>
         <title>Mini Instagram</title>
         <link rel="stylesheet" href="{% static 'styles.css' %}">
+        <!-- Checks for user authorization -->
+        {% if request.user.is_authenticated %}
+            <p>Logged in as: {{ request.user.username }}</p>
+        {% else %}
+            <p>Not logged in</p>
+        {% endif %}
     </head>
     <body>
         <header>
@@ -16,10 +22,13 @@
         <footer>
             <a href="{% url 'show_all_profiles' %}">See all profiles</a> <!-- Footer Link back to ProfileListView -->
             {% if profile %}
-                | <a href="{% url 'show_feed' profile.pk %}">Home / Feed</a>
                 | <a href="{% url 'show_profile' profile.pk %}">Profile</a>
-                | <a href="{% url 'create_post' profile.pk %}">Create a Post!</a> <!-- If Profile is included in context, give option to create post-->
-                | <a href="{% url 'search' profile.pk %}">Search</a> <!-- New search feature -->
+                {% if request.user.is_authenticated and request.user.pk == profile.user_id %}
+                    | <a href="{% url 'show_feed' %}">Home / Feed</a>
+                    | <a href="{% url 'update_profile' %}">Update Profile</a> <!-- Link to update the current Profile -->
+                    | <a href="{% url 'create_post' %}">Create a Post!</a> <!-- If Profile is included in context, give option to create post-->
+                    | <a href="{% url 'search' %}">Search</a> <!-- New search feature -->
+                {% endif %}
             {% endif %}
         </footer>
     </body>

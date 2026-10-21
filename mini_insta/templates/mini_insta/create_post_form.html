@@ -6,7 +6,7 @@
 <h2>Create a new post</h2>
 
 <!-- Form to submit the creation of a new Post -->
-<form action="{% url 'create_post' profile.pk %}" method="POST" enctype="multipart/form-data"> <!-- Will direct to the create_post URL and POST after submission -->
+<form action="{% url 'create_post' %}" method="POST" enctype="multipart/form-data"> <!-- Will direct to the create_post URL and POST after submission -->
     {% csrf_token %} <!-- for verification -->
     <table>
         {{form.as_table}} <!-- The actual form-->
@@ -15,7 +15,9 @@
     <input type="file" id="image_file" name="image_file" multiple> <!-- switched to image file submission -->
 
     <input type="submit" name="submit" value="Submit">
-    <a href="{% url 'show_all_profiles' %}">Cancel</a>
+    <form action="{% url 'show_profile' profile.pk %}" method="GET">
+        <button type="submit">Cancel</button>
+    </form>
 </form>
 
 {% endblock %}

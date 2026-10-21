@@ -145,3 +145,5 @@ CS_DEPLOYMENT_HOSTNAME = 'cs-webapps.bu.edu'
 if socket.gethostname() == CS_DEPLOYMENT_HOSTNAME:
     STATIC_URL = '/cl750/static/'
     MEDIA_URL = '/cl750/media/'
+
+LOGIN_URL = "login" # connects back to the URL pattern in cs412/urls.py

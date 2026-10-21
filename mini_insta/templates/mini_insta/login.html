@@ -1,0 +1,11 @@
+<!-- Clemens Li cl750@bu.edu | Page form for Login to access User-only features -->
+{% extends "mini_insta/base.html" %}
+
+{% block content %}
+    <h1>Log In</h1>
+    <form method="POST"> <!-- uses the default form given for a login by LoginView -->
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Login">
+    </form>
+{% endblock %}

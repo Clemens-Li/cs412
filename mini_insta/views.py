@@ -4,6 +4,7 @@ from django.views.generic import DetailView, ListView, CreateView, UpdateView, D
 from django.urls import reverse
 from .models import Profile, Post, Photo
 from .forms import CreatePostForm, UpdateProfileForm, UpdatePostForm
+from django.contrib.auth.mixins import LoginRequiredMixin # to protect some views before login
 
 # Create your views here.
 
@@ -25,7 +26,7 @@ class PostDetailView(DetailView):
     template_name = "mini_insta/show_post.html" # HTML for a single post display
     context_object_name = "post" # singular post
 
-class CreatePostView(CreateView):
+class CreatePostView(LoginRequiredMixin, CreateView): # only for users
     ''' A view to handle the creation of a Post (display HTML to user GET, process form submission and store new Post object POST)'''
     form_class = CreatePostForm
     template_name = "mini_insta/create_post_form.html" # HTML for the form to create a Post
@@ -58,7 +59,12 @@ class CreatePostView(CreateView):
         pk = self.kwargs["pk"] # retrieve pk from URL pattern
         return reverse("show_post", kwargs={"pk": self.object.pk}) # call reverse to generate URL for newly created post
 
-class UpdateProfileView(UpdateView):
+    # No PK, so need to define self-identification function
+    def get_object(self, queryset=None):
+        ''' Overrides default behavior to get the Profile of the User currently logged in '''
+        return Profile.objects.get(user=self.request.user)
+
+class UpdateProfileView(LoginRequiredMixin, UpdateView): # only for users
     ''' A view to handle the updating of a Profile (displays UpdateProfileForm then handles the submission)'''
     model = Profile
     form_class = UpdateProfileForm
@@ -69,7 +75,12 @@ class UpdateProfileView(UpdateView):
         print(f"UpdateProfileView: form.cleaned_data{form.cleaned_data}") # Print formatted data in terminal for visual check
         return super().form_valid(form)
 
-class DeletePostView(DeleteView):
+    # No PK, so need to define self-identification function
+    def get_object(self, queryset=None):
+        ''' Overrides default behavior to get the Profile of the User currently logged in '''
+        return Profile.objects.get(user=self.request.user)
+
+class DeletePostView(LoginRequiredMixin, DeleteView): # only for users
     ''' A view to handle the deletion of a Profile '''
     model = Post
     template_name = "mini_insta/delete_post_form.html"
@@ -86,7 +97,7 @@ class DeletePostView(DeleteView):
         ''' Provide a URL to redirect to after deleting a Post '''
         return reverse("show_profile", kwargs={"pk": self.object.profile_id}) # reverse for dynamic URL generation
 
-class UpdatePostView(UpdateView): # Same as DeletePostView
+class UpdatePostView(LoginRequiredMixin, UpdateView): # Same as DeletePostView, only for users
     ''' A view to handle the updating of a Profile '''
     model = Post
     form_class = UpdatePostForm
@@ -115,20 +126,25 @@ class ShowFollowingDetailView(DetailView):
     template_name = "mini_insta/show_following.html"
     context_object_name = "profile"
 
-class ShowFeedView(DetailView):
+class ShowFeedView(LoginRequiredMixin, DetailView): # only for users
     ''' A view to display the feed for a single Profile object '''
     model = Profile
     template_name = "mini_insta/show_feed.html"
     context_object_name = "profile"
 
-class SearchView(ListView):
+    # No PK, so need to define self-identification function
+    def get_object(self, queryset=None):
+        ''' Overrides default behavior to get the Profile of the User currently logged in '''
+        return Profile.objects.get(user=self.request.user)
+
+class SearchView(LoginRequiredMixin, ListView): # only for users
     ''' A view to display searches called by a single Profile object '''
     template_name = "mini_insta/search_results.html"
 
     def dispatch(self, request, *args, **kwargs):
         ''' Handles requests or redirects to search.html for request submission '''
         if "query" not in self.request.GET:
-            profile = Profile.objects.get(pk=self.kwargs["pk"])
+            profile = self.get_object()
             return render(request, "mini_insta/search.html", {"profile": profile})
         return super().dispatch(request, *args, **kwargs)
 
@@ -140,7 +156,7 @@ class SearchView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         query = self.request.GET.get("query", "").strip()
-        context["profile"] = Profile.objects.get(pk=self.kwargs["pk"])
+        context["profile"] = self.get_object()
         context["query"] = query
         context["posts"] = context["object_list"]
 
@@ -153,6 +169,21 @@ class SearchView(ListView):
             context["profiles"] = Profile.objects.none()
 
         return context
+
+    # No PK, so need to define self-identification function
+    def get_object(self, queryset=None):
+        ''' Overrides default behavior to get the Profile of the User currently logged in '''
+        return Profile.objects.get(user=self.request.user)
+
+class SelfProfileDetailView(LoginRequiredMixin, DetailView):
+    model = Profile
+    template_name = "mini_insta/show_profile.html"
+    context_object_name = "profile"
+
+    # No PK, so need to define self-identification function
+    def get_object(self, queryset=None):
+        ''' Overrides default behavior to get the Profile of the User currently logged in '''
+        return Profile.objects.get(user=self.request.user)
 
 
 
