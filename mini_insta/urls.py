@@ -20,9 +20,10 @@ urlpatterns = [
     path("profile/search", SearchView.as_view(), name="search"),
     path("profile/update", UpdateProfileView.as_view(), name="update_profile"),
     path("profile/create_post", CreatePostView.as_view(), name="create_post"),
-
     path("profile", SelfProfileDetailView.as_view(), name="profile"), # Made my own view to view User's own Profile
 
-    # Login URLs
-    path("login/", auth_views.LoginView.as_view(template_name="mini_insta/login.html"), name="login") # Login View
+    # Authentication URLs
+    path("login/", auth_views.LoginView.as_view(template_name="mini_insta/login.html"), name="login"), # Login View
+    path("logout/", auth_views.LogoutView.as_view(next_page="logout_confirm"), name="logout"), # Logout View
+    path("logout_confirm/", TemplateView.as_view(template_name="mini_insta/logged_out.html"), name="logout_confirm")
 ]

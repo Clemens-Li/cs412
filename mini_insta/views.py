@@ -1,12 +1,17 @@
 ''' Clemens Li cl750@bu.edu | Views for intermediate processes '''
 from django.shortcuts import render
-from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse
 from .models import Profile, Post, Photo
 from .forms import CreatePostForm, UpdateProfileForm, UpdatePostForm
 from django.contrib.auth.mixins import LoginRequiredMixin # to protect some views before login
 
 # Create your views here.
+
+class MiniInstaLoginRequiredMixin(LoginRequiredMixin): # had to put it up here to be used by other views
+    ''' LoginRequiredMixin Subclass so that get_login_url is inherited '''
+    def get_login_url(self):
+        return reverse("login")
 
 class ProfileListView(ListView):
     ''' Obtains specific data for all profiles, then directs to show_all_profiles.html '''
@@ -26,7 +31,7 @@ class PostDetailView(DetailView):
     template_name = "mini_insta/show_post.html" # HTML for a single post display
     context_object_name = "post" # singular post
 
-class CreatePostView(LoginRequiredMixin, CreateView): # only for users
+class CreatePostView(MiniInstaLoginRequiredMixin, CreateView): # only for users
     ''' A view to handle the creation of a Post (display HTML to user GET, process form submission and store new Post object POST)'''
     form_class = CreatePostForm
     template_name = "mini_insta/create_post_form.html" # HTML for the form to create a Post
@@ -64,7 +69,7 @@ class CreatePostView(LoginRequiredMixin, CreateView): # only for users
         ''' Overrides default behavior to get the Profile of the User currently logged in '''
         return Profile.objects.get(user=self.request.user)
 
-class UpdateProfileView(LoginRequiredMixin, UpdateView): # only for users
+class UpdateProfileView(MiniInstaLoginRequiredMixin, UpdateView): # only for users
     ''' A view to handle the updating of a Profile (displays UpdateProfileForm then handles the submission)'''
     model = Profile
     form_class = UpdateProfileForm
@@ -80,7 +85,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView): # only for users
         ''' Overrides default behavior to get the Profile of the User currently logged in '''
         return Profile.objects.get(user=self.request.user)
 
-class DeletePostView(LoginRequiredMixin, DeleteView): # only for users
+class DeletePostView(MiniInstaLoginRequiredMixin, DeleteView): # only for users
     ''' A view to handle the deletion of a Profile '''
     model = Post
     template_name = "mini_insta/delete_post_form.html"
@@ -97,7 +102,7 @@ class DeletePostView(LoginRequiredMixin, DeleteView): # only for users
         ''' Provide a URL to redirect to after deleting a Post '''
         return reverse("show_profile", kwargs={"pk": self.object.profile_id}) # reverse for dynamic URL generation
 
-class UpdatePostView(LoginRequiredMixin, UpdateView): # Same as DeletePostView, only for users
+class UpdatePostView(MiniInstaLoginRequiredMixin, UpdateView): # Same as DeletePostView, only for users
     ''' A view to handle the updating of a Profile '''
     model = Post
     form_class = UpdatePostForm
@@ -126,7 +131,7 @@ class ShowFollowingDetailView(DetailView):
     template_name = "mini_insta/show_following.html"
     context_object_name = "profile"
 
-class ShowFeedView(LoginRequiredMixin, DetailView): # only for users
+class ShowFeedView(MiniInstaLoginRequiredMixin, DetailView): # only for users
     ''' A view to display the feed for a single Profile object '''
     model = Profile
     template_name = "mini_insta/show_feed.html"
@@ -137,7 +142,7 @@ class ShowFeedView(LoginRequiredMixin, DetailView): # only for users
         ''' Overrides default behavior to get the Profile of the User currently logged in '''
         return Profile.objects.get(user=self.request.user)
 
-class SearchView(LoginRequiredMixin, ListView): # only for users
+class SearchView(MiniInstaLoginRequiredMixin, ListView): # only for users
     ''' A view to display searches called by a single Profile object '''
     template_name = "mini_insta/search_results.html"
 
@@ -154,6 +159,7 @@ class SearchView(LoginRequiredMixin, ListView): # only for users
         return Post.objects.filter(caption__icontains=query)
 
     def get_context_data(self, **kwargs):
+        ''' Return dictionary of context variables for use in the template '''
         context = super().get_context_data()
         query = self.request.GET.get("query", "").strip()
         context["profile"] = self.get_object()
@@ -175,7 +181,8 @@ class SearchView(LoginRequiredMixin, ListView): # only for users
         ''' Overrides default behavior to get the Profile of the User currently logged in '''
         return Profile.objects.get(user=self.request.user)
 
-class SelfProfileDetailView(LoginRequiredMixin, DetailView):
+class SelfProfileDetailView(MiniInstaLoginRequiredMixin, DetailView):
+    ''' For non-PK self-profile Detail View '''
     model = Profile
     template_name = "mini_insta/show_profile.html"
     context_object_name = "profile"
@@ -184,6 +191,11 @@ class SelfProfileDetailView(LoginRequiredMixin, DetailView):
     def get_object(self, queryset=None):
         ''' Overrides default behavior to get the Profile of the User currently logged in '''
         return Profile.objects.get(user=self.request.user)
+
+class LogoutConfirmationView(TemplateView):
+    ''' A view to display a confirmation page to logout, with options to log back in '''
+    
+
 
 
 

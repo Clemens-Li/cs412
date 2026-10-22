@@ -6,6 +6,7 @@
     <form method="POST"> <!-- uses the default form given for a login by LoginView -->
         {% csrf_token %}
         {{ form.as_p }}
+        <input type="hidden" name="next" value = "{{ next }}">
         <input type="submit" value="Login">
     </form>
 {% endblock %}
