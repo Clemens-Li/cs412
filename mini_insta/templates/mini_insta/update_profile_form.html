@@ -1,9 +1,9 @@
 <!-- Clemens Li cl750@bu.edu | Page form for updating a Profile -->
- {% extends "mini_insta/base.html" %}
+{% extends "mini_insta/base.html" %}
 
- {% block content %}
+{% block content %}
 
- <h2>Update Your Profile</h2>
+<h2>Update Your Profile</h2>
 
 <!-- -->
 <form action="{% url 'update_profile' %}" method="POST" enctype="multipart/form-data"> <!-- Will direct to the create_post URL and POST after submission -->

@@ -3,8 +3,10 @@ from django.shortcuts import render
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse
 from .models import Profile, Post, Photo
-from .forms import CreatePostForm, UpdateProfileForm, UpdatePostForm
+from .forms import CreatePostForm, UpdateProfileForm, UpdatePostForm, CreateProfileForm
 from django.contrib.auth.mixins import LoginRequiredMixin # to protect some views before login
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 
 # Create your views here.
 
@@ -192,9 +194,25 @@ class SelfProfileDetailView(MiniInstaLoginRequiredMixin, DetailView):
         ''' Overrides default behavior to get the Profile of the User currently logged in '''
         return Profile.objects.get(user=self.request.user)
 
-class LogoutConfirmationView(TemplateView):
-    ''' A view to display a confirmation page to logout, with options to log back in '''
-    
+class CreateProfileView(CreateView):
+    ''' For the creation of a Profile '''
+    model = Profile
+    form_class = CreateProfileForm
+    template_name = "mini_insta/create_profile_form.html"
+
+    def get_context_data(self, **kwargs):
+        ''' Return dictionary of context variables for use in the template '''
+        context = super().get_context_data(**kwargs)
+        context["user_form"] = UserCreationForm(self.request.POST)
+        return context
+
+    def form_valid(self, form):
+        ''' Saves the new User and its associated Profile in the database '''
+        user_form = UserCreationForm(self.request.POST)
+        user = user_form.save()
+        form.instance.user = user # Associates the new User with the new Profile
+        login(self.request, user, backend="django.contrib.auth.backends.ModelBackend") # logs in the User right away
+        return super().form_valid(form)
 
 
 

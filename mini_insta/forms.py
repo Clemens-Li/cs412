@@ -22,3 +22,10 @@ class UpdatePostForm(forms.ModelForm): # Exact same as CreatePostForm, just diff
         ''' Specifies that this form is associated with a model from our database '''
         model = Post
         fields = ["caption"] # Modifiable fields; can't change username or join_date
+
+class CreateProfileForm(forms.ModelForm):
+    ''' A form to create a Profile '''
+    class Meta:
+        ''' Specifies that this form is associated with a model from our database '''
+        model = Profile
+        fields = ["username", "display_name", "bio_text", "profile_image_url"]

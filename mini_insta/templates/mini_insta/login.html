@@ -6,7 +6,8 @@
     <form method="POST"> <!-- uses the default form given for a login by LoginView -->
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="hidden" name="next" value = "{{ next }}">
+        {% url "show_all_profiles" as default_url %} <!-- Fallback for if no next page is given for Login completion; show all profiles after direct login -->
+        <input type="hidden" name="next" value="{{ next | default:default_url }}">
         <input type="submit" value="Login">
     </form>
 {% endblock %}
