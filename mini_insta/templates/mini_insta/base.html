@@ -21,15 +21,17 @@
         </main>
         <footer>
             <a href="{% url 'show_all_profiles' %}">See all profiles</a> <!-- Footer Link back to ProfileListView -->
-            {% if profile %}
-                {% if request.user.is_authenticated and request.user.pk == profile.user_id %} <!-- Only if a User is logged in -->
-                    | <a href="{% url 'show_profile' profile.pk %}">My Profile</a>
-                    | <a href="{% url 'show_feed' %}">Home / Feed</a>
-                    | <a href="{% url 'update_profile' %}">Update Profile</a> <!-- Link to update the current Profile -->
-                    | <a href="{% url 'create_post' %}">Create a Post!</a> <!-- If Profile is included in context, give option to create post-->
-                    | <a href="{% url 'search' %}">Search</a> <!-- New search feature -->
-                {% endif %}
+            {% if request.user.is_authenticated and request.user.pk == profile.user_id %} <!-- Only if a User is logged in -->
+                | <a href="{% url 'show_profile' profile.pk %}">My Profile</a>
+                | <a href="{% url 'show_feed' %}">Home / Feed</a>
+                | <a href="{% url 'update_profile' %}">Update Profile</a> <!-- Link to update the current Profile -->
+                | <a href="{% url 'create_post' %}">Create a Post!</a> <!-- If Profile is included in context, give option to create post-->
+                | <a href="{% url 'search' %}">Search</a> <!-- New search feature -->
+            {% elif request.user.is_authenticated %}
+                <p>Go to your Profile for more actions at the bottom!</p>
             {% endif %}
+
+            <!-- Login/Logout-->
             {% if request.user.is_authenticated %} <!-- Either show login or logout button -->
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}

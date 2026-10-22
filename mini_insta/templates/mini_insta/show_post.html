@@ -15,6 +15,15 @@
             </tbody>
         </table>
     </div>
+    {% if request.user.is_authenticated and request.user.pk != post.profile.user_id %} <!-- Only shows functionality if User is logged in -->
+        <nav>
+            {% if is_liked %}
+                <a class="button" href="{% url 'delete_like' post.pk %}">Unlike</a>
+            {% else %}
+                <a class="button" href="{% url 'like' post.pk %}">Like</a>
+            {% endif %}
+        </nav>
+    {% endif %}
     <h4>Likes: {{ post.get_likes.count }}</h4>
     <h4>{{ post.caption }} Posted at {{ post.timestamp }}</h4> <!-- caption --> 
 

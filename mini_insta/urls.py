@@ -27,5 +27,11 @@ urlpatterns = [
     path("logout/", auth_views.LogoutView.as_view(next_page="logout_confirm"), name="logout"), # Logout View
     path("logout_confirm/", TemplateView.as_view(template_name="mini_insta/logged_out.html"), name="logout_confirm"), # Logout Confirmation View
 
-    path("create_profile", CreateProfileView.as_view(), name="create_profile") # For Profile Creation
+    path("create_profile", CreateProfileView.as_view(), name="create_profile"), # For Profile Creation
+
+    # User Interaction URLs
+    path("profile/<int:pk>/follow", FollowView.as_view(), name="follow"),
+    path("profile/<int:pk>/delete_follow", DeleteFollowView.as_view(), name="delete_follow"),
+    path("post/<int:pk>/like", LikeView.as_view(), name="like"),
+    path("post/<int:pk>/delete_like", DeleteLikeView.as_view(), name="delete_like")
 ]

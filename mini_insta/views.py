@@ -1,8 +1,8 @@
 ''' Clemens Li cl750@bu.edu | Views for intermediate processes '''
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse
-from .models import Profile, Post, Photo
+from .models import Profile, Post, Photo, Follow, Like
 from .forms import CreatePostForm, UpdateProfileForm, UpdatePostForm, CreateProfileForm
 from django.contrib.auth.mixins import LoginRequiredMixin # to protect some views before login
 from django.contrib.auth.forms import UserCreationForm
@@ -27,11 +27,25 @@ class ProfileDetailView(DetailView):
     template_name = "mini_insta/show_profile.html" # HTML for a single profile page
     context_object_name = "profile" # singular profile
 
+    def get_context_data(self, **kwargs):
+        ''' Return dictionary of context variables for use in the template '''
+        context = super().get_context_data()
+        # Checks if the user is authenticated and if the user's Profile follows the current Profile, then returns a boolean for redirecting context in the template
+        context["is_following"] = (self.request.user.is_authenticated and Follow.objects.filter(follower_profile__user=self.request.user, profile=self.object).exists())
+        return context
+
 class PostDetailView(DetailView):
     ''' Obtains data for a single post, then directs to show_post.html '''
     model = Post
     template_name = "mini_insta/show_post.html" # HTML for a single post display
     context_object_name = "post" # singular post
+
+    def get_context_data(self, **kwargs):
+        ''' Return dictionary of context variables for use in the template '''
+        context = super().get_context_data()
+        # Checks if the user is authenticated and if the user's Profile likes the current Post, then returns a boolean for redirecting context in the template
+        context["is_liked"] = (self.request.user.is_authenticated and Like.objects.filter(profile__user=self.request.user, post=self.object).exists())
+        return context
 
 class CreatePostView(MiniInstaLoginRequiredMixin, CreateView): # only for users
     ''' A view to handle the creation of a Post (display HTML to user GET, process form submission and store new Post object POST)'''
@@ -41,15 +55,17 @@ class CreatePostView(MiniInstaLoginRequiredMixin, CreateView): # only for users
     def get_context_data(self, **kwargs):
         ''' Return dictionary of context variables for use in the template '''
         context = super().get_context_data() # superclass method
-        pk = self.kwargs["pk"] # retrieve PK
-        profile = Profile.objects.get(pk=pk) # Locate correct Profile
+        # pk = self.kwargs["pk"] # retrieve PK
+        # profile = Profile.objects.get(pk=pk) # Locate correct Profile
+        profile = Profile.objects.get(user=self.request.user) # Updated method of identifying Profile without PK
         context["profile"] = profile # add to context dictionary
         return context
 
     def form_valid(self, form):
         ''' Handles form submission, adding Profile FK to Post before submitting to database '''
-        pk = self.kwargs["pk"] # retrieve PK
-        profile = Profile.objects.get(pk=pk) # Locate correct Profile
+        # pk = self.kwargs["pk"] # retrieve PK
+        # profile = Profile.objects.get(pk=pk) # Locate correct Profile
+        profile = Profile.objects.get(user=self.request.user) # Updated method of identifying Profile withou PK
         form.instance.profile = profile # attach Profile to Post
         response = super().form_valid(form) # have to do this first so I can create my Photo
         files = self.request.FILES.getlist("image_file")
@@ -214,6 +230,51 @@ class CreateProfileView(CreateView):
         login(self.request, user, backend="django.contrib.auth.backends.ModelBackend") # logs in the User right away
         return super().form_valid(form)
 
+class FollowView(MiniInstaLoginRequiredMixin, TemplateView):
+    ''' Handles the creation of a Follow relation between one Profile and another Profile '''
+    def dispatch(self, request, *args, **kwargs):
+        ''' Executes the creation, then redirects back to the newly followed Profile '''
+        if not request.user.is_authenticated:
+            return self.handle_no_permission() # If not logged in, redirect to login (I think this is coming from the mixin)
+        following = Profile.objects.get(user=self.request.user) # Following
+        followed = Profile.objects.get(pk=kwargs["pk"]) # Followed
+        if following.pk != followed.pk: # can't follow your own Profile
+            Follow.objects.get_or_create(follower_profile=following, profile=followed) # If a Follow relation already exists, just return it and don't create a duplicate
+        return redirect("show_profile", pk=followed.pk) # provides PK for which Profile to display after execution
+
+class DeleteFollowView(MiniInstaLoginRequiredMixin, TemplateView):
+    ''' Handles the deletion of a Follow relation between one Profile and another Profile '''
+    def dispatch(self, request, *args, **kwargs):
+        ''' Executes the delete, then redirects back to the previously followed Profile'''
+        if not request.user.is_authenticated:
+            return self.handle_no_permission() # If not logged in, redirect to login (I think this is coming from the mixin)
+        following = Profile.objects.get(user=self.request.user) # Following
+        followed = Profile.objects.get(pk=kwargs["pk"]) # Followed
+        Follow.objects.filter(follower_profile=following, profile=followed).delete() # Filters using the Profile parameters and deletes the relation found if it exists
+        return redirect("show_profile", pk=followed.pk) # provides PK for which Profile to display after execution
+
+class LikeView(MiniInstaLoginRequiredMixin, TemplateView):
+    ''' Handles the creation of a Like relation between a Profile and a Post '''
+    def dispatch(self, request, *args, **kwargs):
+        ''' Executes the creation, then redirects to the newly liked Post '''
+        if not request.user.is_authenticated:
+            return self.handle_no_permission() # If not logged in, redirect to login
+        liking = Profile.objects.get(user=self.request.user) # The Profile that is liking
+        liked = Post.objects.get(pk=kwargs["pk"]) # The Post being liked
+        if liking.pk != liked.pk: # can't like your own Post
+            Like.objects.get_or_create(profile=liking, post=liked)
+        return redirect("show_post", pk=liked.pk) # provides PK for which Post to display after execution
+
+class DeleteLikeView(MiniInstaLoginRequiredMixin, TemplateView):
+    ''' Handles the deletion of a Like relation between a Profile and a Post '''
+    def dispatch(self, request, *args, **kwargs):
+        ''' Executes the deletion, then redirects to the previously liked Post '''
+        if not request.user.is_authenticated:
+            return self.handle_no_permission() # If not logged in, redirect to login
+        liking = Profile.objects.get(user=self.request.user) # The Profile that liked
+        liked = Post.objects.get(pk=kwargs["pk"]) # The Post that was liked
+        Like.objects.filter(profile=liking, post=liked).delete() # Filters using the Profile and Post parameters and deletes the relation found if it exists
+        return redirect("show_post", pk=liked.pk) # provides PK for which Post to display after execution
 
 
 

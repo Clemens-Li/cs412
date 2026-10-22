@@ -24,9 +24,17 @@
                 </div>
                 <p>{{ profile.bio_text }}</p>
                 <p>User joined {{ profile.join_date }}</p>
+                <!-- Makes sure Follow and Unfollow functionality is only shown for other logged in Users -->
+                {% if request.user.is_authenticated and request.user.pk != profile.user_id %}
+                    <nav>
+                        {% if is_following %}
+                            <a class="button" href="{% url 'delete_follow' profile.pk %}">Unfollow</a>
+                        {% else %}
+                            <a class="button" href="{% url 'follow' profile.pk %}">Follow</a>
+                        {% endif %}
+                    </nav>
+                {% endif %}
             </div>
-
-            
         </div>
 
         <div class="detail_posts">
