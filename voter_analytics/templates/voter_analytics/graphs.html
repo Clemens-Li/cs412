@@ -61,7 +61,7 @@
     </form>
 
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    {{ birth_chart }} <!-- Histogram for Voters by birth year -->
-    {{ party_chart }} <!-- Pie chart for Voters by party affiliation -->
-    {{ election_chart }} <!-- Histogram for Voters by Election Participation per year -->
+    {{ birth_chart|safe }} <!-- Histogram for Voters by birth year -->
+    {{ party_chart|safe }} <!-- Pie chart for Voters by party affiliation -->
+    {{ election_chart|safe }} <!-- Histogram for Voters by Election Participation per year -->
 {% endblock %}
