@@ -1,0 +1,25 @@
+<!-- Clemens Li | cl750@bu.edu | Voter Detail Template-->
+{% extends "voter_analytics/base.html" %}
+
+{% block content %}
+    <h1>Voter Details</h1>
+
+    <p><strong>ID:</strong> {{ voter.voter_id }}</p>
+    <p><strong>Name:</strong> {{ voter.name }}</p>
+    <p><strong>Address:</strong> {{ voter.address }}</p>
+    <p><strong>Date of birth:</strong> {{ voter.dob }}</p>
+    <p><strong>Date registered:</strong> {{ voter.dor|default:"Unknown" }}</p>
+    <p><strong>Party:</strong> {{ voter.party }}</p>
+    <p><strong>Precinct:</strong> {{ voter.precinct }}</p>
+
+    <h2>Election participation</h2>
+    <p><strong>2020 State:</strong> {{ voter.v20state|yesno:"Yes,No" }}</p>
+    <p><strong>2021 Town:</strong> {{ voter.v21town|yesno:"Yes,No" }}</p>
+    <p><strong>2021 Primary:</strong> {{ voter.v21primary|yesno:"Yes,No" }}</p>
+    <p><strong>2022 General:</strong> {{ voter.v22general|yesno:"Yes,No" }}</p>
+    <p><strong>2023 Town:</strong> {{ voter.v23town|yesno:"Yes,No" }}</p>
+    <p><strong>Voter score:</strong> {{ voter.voter_score }}</p>
+
+    <p><a href="https://www.google.com/maps?q={{ voter.address }}">Show on Map</a></p>
+    <p><a href="{% url 'voters' %}">Back to voter list</a></p>
+{% endblock %}

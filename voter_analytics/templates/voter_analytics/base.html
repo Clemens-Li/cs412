@@ -1,0 +1,22 @@
+<!-- Clemens Li | cl750@bu.edu | Base Template -->
+
+{% load static %}
+
+<html>
+    <body>
+        <header>
+            Voter Analytics
+            <nav>
+                <a href="{% url 'voters' %}">Home</a>
+                <a href="{% url 'graphs' %}">Graphs</a>
+            </nav>
+        </header>
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+        <footer>
+            <p>Clemens Li | cl750@bu.edu</p>
+        </footer>
+    </body>
+</html>
