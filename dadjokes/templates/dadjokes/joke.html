@@ -1,0 +1,8 @@
+<!-- Clemens Li | cl750@bu.edu | Joke Detail Page-->
+{% extends "dadjokes/base.html" %}
+
+{% block content %}
+    <h2>Joke</h2>
+    <p>{{ joke.text }}</p>
+    <p>Submitted by {{ joke.name }} at {{ joke.timestamp }}</p>
+{% endblock %}

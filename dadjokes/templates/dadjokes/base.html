@@ -1,0 +1,24 @@
+<!-- Clemens Li cl750@bu.edu | Base page (Header + Footer) -->
+{% load static %}
+<html>
+    <head>
+        <title>Dad Jokes</title>
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
+    </head>
+    <body>
+        <header>
+            <h1>Dad Jokes</h1> <!-- Header -->
+        </header>
+        <main>
+            {% block content %} <!-- Actual content -->
+            {% endblock %}
+        </main>
+        <footer>
+            <nav>
+                <a href="{% url 'random' %}">Random</a> |
+                <a href="{% url 'jokes' %}">All jokes</a> |
+                <a href="{% url 'pictures' %}">All pictures</a>
+            </nav>
+        </footer>
+    </body>
+</html>

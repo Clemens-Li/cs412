@@ -1,0 +1,10 @@
+<!-- Clemens Li | cl750@bu.edu | Random Joke + Picture Page -->
+{% extends "dadjokes/base.html" %}
+
+{% block content %}
+    <p>{{ joke.text }}</p>
+    <p>Submitted by {{ joke.name }} at {{ joke.timestamp }}</p>
+
+    <img src="{{ picture.image_url }}"  >
+    <p>Submitted by {{ picture.name }} at {{ picture.timestamp }}</p>
+{% endblock %}

@@ -1,0 +1,16 @@
+<!-- Clemens Li | cl750@bu.edu | Show All Pictures Page -->
+{% extends "dadjokes/base.html" %}
+
+{% block content %}
+    <h2>All pictures</h2>
+    {% for picture in pictures %}
+        <article>
+            <a href="{% url 'picture' picture.pk %}"> <!-- Clickable image leads to detail page -->
+                <img src="{{ picture.image_url }}">
+            </a>
+            <p>Submitted by {{ picture.name }} at {{ picture.timestamp }}</p>
+        </article>
+    {% empty %}
+        <p>No pictures have been added yet.</p>
+    {% endfor %}
+{% endblock %}

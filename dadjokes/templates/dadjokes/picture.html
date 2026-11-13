@@ -1,0 +1,8 @@
+<!-- Clemens Li | cl750@bu.edu | Picture Detail Page-->
+{% extends "dadjokes/base.html" %}
+
+{% block content %}
+    <h2>Picture</h2>
+    <img src="{{ picture.image_url }}">
+    <p>Submitted by {{ picture.name }} at {{ picture.timestamp }}</p>
+{% endblock %}

@@ -1,0 +1,14 @@
+<!-- Clemens Li | cl750@bu.edu | Show All Jokes Page -->
+{% extends "dadjokes/base.html" %}
+
+{% block content %}
+    <h2>All jokes</h2>
+    {% for joke in jokes %}
+        <article>
+            <p><a href="{% url 'joke' joke.pk %}">{{ joke.text }}</a></p>
+            <p>Submitted by {{ joke.name }} at {{ joke.timestamp }}</p>
+        </article>
+    {% empty %}
+        <p>No jokes have been added yet.</p>
+    {% endfor %}
+{% endblock %}
