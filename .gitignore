@@ -1,0 +1,3 @@
+# Python cache folders (I asked AI to help me figure out how to do this)
+__pycache__/
+*.py[cod]
