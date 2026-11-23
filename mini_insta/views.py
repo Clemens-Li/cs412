@@ -7,6 +7,9 @@ from .forms import CreatePostForm, UpdateProfileForm, UpdatePostForm, CreateProf
 from django.contrib.auth.mixins import LoginRequiredMixin # to protect some views before login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from rest_framework import generics
+from .serializers import *
+
 
 # Create your views here.
 
@@ -275,6 +278,37 @@ class DeleteLikeView(MiniInstaLoginRequiredMixin, TemplateView):
         liked = Post.objects.get(pk=kwargs["pk"]) # The Post that was liked
         Like.objects.filter(profile=liking, post=liked).delete() # Filters using the Profile and Post parameters and deletes the relation found if it exists
         return redirect("show_post", pk=liked.pk) # provides PK for which Post to display after execution
+
+# API Views
+class ProfileListAPIView(generics.ListAPIView):
+    ''' API to return all Profiles '''
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+class ProfileDetailAPIView(generics.RetrieveAPIView):
+    ''' API to return a single Profile '''
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+class ProfilePostsAPIView(generics.ListCreateAPIView):
+    ''' API to return all Posts made by a Profile '''
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        ''' Return QuerySet of Posts associated with the Profile '''
+        return Post.objects.filter(profile_id=self.kwargs["pk"])
+
+    def perform_create(self, serializer):
+        ''' Associate a newly created Post with the Profile in the URL '''
+        serializer.save(profile_id=self.kwargs["pk"])
+
+class ProfileFeedAPIView(generics.ListAPIView):
+    ''' API to return the feed curated for a Profile '''
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        ''' Return QuerySet of Posts in the feed '''
+        return Profile.objects.get(pk=self.kwargs["pk"]).get_post_feed()
 
 
 

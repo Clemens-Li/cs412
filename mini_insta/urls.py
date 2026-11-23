@@ -33,5 +33,11 @@ urlpatterns = [
     path("profile/<int:pk>/follow", FollowView.as_view(), name="follow"),
     path("profile/<int:pk>/delete_follow", DeleteFollowView.as_view(), name="delete_follow"),
     path("post/<int:pk>/like", LikeView.as_view(), name="like"),
-    path("post/<int:pk>/delete_like", DeleteLikeView.as_view(), name="delete_like")
+    path("post/<int:pk>/delete_like", DeleteLikeView.as_view(), name="delete_like"),
+
+    # API URLs
+    path("api/profiles/", ProfileListAPIView.as_view()),
+    path("api/profiles/<int:pk>/", ProfileDetailAPIView.as_view()),
+    path("api/profiles/<int:pk>/posts/", ProfilePostsAPIView.as_view()),
+    path("api/profiles/<int:pk>/feed/", ProfileFeedAPIView.as_view())
 ]
