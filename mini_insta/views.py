@@ -1,14 +1,20 @@
 ''' Clemens Li cl750@bu.edu | Views for intermediate processes '''
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse
 from .models import Profile, Post, Photo, Follow, Like
 from .forms import CreatePostForm, UpdateProfileForm, UpdatePostForm, CreateProfileForm
 from django.contrib.auth.mixins import LoginRequiredMixin # to protect some views before login
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
-from rest_framework import generics
-from .serializers import *
+from django.contrib.auth import login, authenticate
+from rest_framework import generics, status
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.authtoken.models import Token
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .serializers import PostSerializer, ProfileSerializer, UserSerializer
 
 
 # Create your views here.
@@ -280,19 +286,62 @@ class DeleteLikeView(MiniInstaLoginRequiredMixin, TemplateView):
         return redirect("show_post", pk=liked.pk) # provides PK for which Post to display after execution
 
 # API Views
+class UserRegistrationView(generics.CreateAPIView):
+    serializer_class = UserSerializer
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def perform_create(self, serializer):
+        user = serializer.save()
+        Profile.objects.get_or_create(
+            user=user,
+            defaults={"username": user.username},
+        )
+
+
+class TokenLoginView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        user = authenticate(
+            request,
+            username=request.data.get("username"),
+            password=request.data.get("password"),
+        )
+        if user is None:
+            return Response(
+                {"detail": "Invalid username or password."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        profile, _ = Profile.objects.get_or_create(
+            user=user,
+            defaults={"username": user.username},
+        )
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({"token": token.key, "profile_id": profile.id})
+
+
 class ProfileListAPIView(generics.ListAPIView):
     ''' API to return all Profiles '''
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 class ProfileDetailAPIView(generics.RetrieveAPIView):
     ''' API to return a single Profile '''
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 class ProfilePostsAPIView(generics.ListCreateAPIView):
     ''' API to return all Posts made by a Profile '''
     serializer_class = PostSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         ''' Return QuerySet of Posts associated with the Profile '''
@@ -300,15 +349,48 @@ class ProfilePostsAPIView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         ''' Associate a newly created Post with the Profile in the URL '''
-        serializer.save(profile_id=self.kwargs["pk"])
+        profile = get_object_or_404(Profile, pk=self.kwargs["pk"])
+        if profile.user_id != self.request.user.id:
+            raise PermissionDenied
+        serializer.save(profile=profile)
 
 class ProfileFeedAPIView(generics.ListAPIView):
     ''' API to return the feed curated for a Profile '''
     serializer_class = PostSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         ''' Return QuerySet of Posts in the feed '''
-        return Profile.objects.get(pk=self.kwargs["pk"]).get_post_feed()
+        profile = get_object_or_404(
+            Profile,
+            pk=self.kwargs["pk"],
+            user=self.request.user,
+        )
+        return profile.get_post_feed()
+
+
+class PostUpdateAPIView(generics.UpdateAPIView):
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def perform_update(self, serializer):
+        if serializer.instance.profile.user_id != self.request.user.id:
+            raise PermissionDenied
+        serializer.save()
+
+
+class PostDeleteAPIView(generics.DestroyAPIView):
+    queryset = Post.objects.all()
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def perform_destroy(self, instance):
+        if instance.profile.user_id != self.request.user.id:
+            raise PermissionDenied
+        instance.delete()
 
 
 
