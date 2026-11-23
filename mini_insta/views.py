@@ -315,10 +315,9 @@ class TokenLoginView(APIView):
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
-        profile, _ = Profile.objects.get_or_create(
-            user=user,
-            defaults={"username": user.username},
-        )
+        profile = Profile.objects.filter(user=user).order_by("id").first()
+        if profile is None:
+            profile = Profile.objects.create(user=user, username=user.username)
         token, _ = Token.objects.get_or_create(user=user)
         return Response({"token": token.key, "profile_id": profile.id})
 

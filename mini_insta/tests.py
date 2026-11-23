@@ -51,6 +51,18 @@ class TokenAuthTests(APITestCase):
         self.assertTrue(response.data["token"])
         self.assertEqual(response.data["profile_id"], self.owner_profile.id)
 
+    def test_login_uses_first_profile_when_user_has_multiple(self):
+        Profile.objects.create(user=self.owner, username="second-profile")
+
+        response = self.client.post(
+            reverse("api_login"),
+            {"username": self.owner.username, "password": "test-password"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["profile_id"], self.owner_profile.id)
+
     def test_bad_login_is_rejected(self):
         response = self.client.post(
             reverse("api_login"),
